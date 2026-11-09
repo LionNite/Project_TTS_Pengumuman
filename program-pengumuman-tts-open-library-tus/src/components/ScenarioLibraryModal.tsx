@@ -338,19 +338,6 @@ export const ScenarioLibraryModal: React.FC<ScenarioLibraryModalProps> = ({
                     </div>
 
                     <div className="flex items-center gap-1.5 shrink-0">
-                      <button
-                        type="button"
-                        onClick={(e) => handleCopyText(scenario.id, scenario.text, e)}
-                        className="p-1.5 text-stone-400 hover:text-stone-700 hover:bg-stone-100 rounded-lg transition-colors cursor-pointer"
-                        title={t.copyScriptText}
-                      >
-                        {isCopied ? (
-                          <Check className="w-4 h-4 text-emerald-600" />
-                        ) : (
-                          <Copy className="w-4 h-4" />
-                        )}
-                      </button>
-
                       {scenario.isCustom && (
                         <button
                           type="button"

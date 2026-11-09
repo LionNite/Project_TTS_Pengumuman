@@ -183,9 +183,6 @@ export const RightSidebar: React.FC<RightSidebarProps> = ({
             <h2 className="text-sm font-bold text-stone-800">
               {t.savedAudioTitle}
             </h2>
-            <p className="text-[11px] text-stone-400">
-              {t.savedAudioSubtitle}
-            </p>
           </div>
         </div>
 

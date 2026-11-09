@@ -9,8 +9,6 @@ import {
   SlidersHorizontal,
   BookmarkPlus,
   BookOpen,
-  Maximize2,
-  Minimize2,
   Menu,
   Play,
   Sparkles,
@@ -103,65 +101,17 @@ export const CenterWorkspace: React.FC<CenterWorkspaceProps> = ({
 
   return (
     <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
-      {/* Top Navbar Header */}
-      <header className="h-20 px-6 sm:px-8 flex items-center justify-between border-b border-stone-200 bg-white/80 backdrop-blur-md sticky top-0 z-20">
-        <div className="flex items-center gap-3">
-          {/* Toggle sidebar button when collapsed */}
-          {isSidebarCollapsed && (
-            <button
-              type="button"
-              onClick={onToggleSidebar}
-              className="p-2 rounded-2xl bg-red-50 hover:bg-red-100 text-[#B11116] transition-colors shadow-xs cursor-pointer"
-              title={t.expandSidebar}
-            >
-              <Menu className="w-5 h-5" />
-            </button>
-          )}
-
-          <div>
-            <h1 className="text-lg font-bold text-stone-900 tracking-tight flex items-center gap-2">
-              <span>{t.studioTitle}</span>
-              <span className="hidden sm:inline-flex text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-red-50 text-[#B11116] border border-red-100">
-                {t.modelBadge}
-              </span>
-            </h1>
-            <p className="text-xs text-stone-400 hidden sm:block">
-              {t.studioSubtitle}
-            </p>
-          </div>
-        </div>
-
-        {/* Action icons */}
-        <div className="flex items-center gap-2.5">
-          <button
-            type="button"
-            onClick={onOpenScenarioLibrary}
-            className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl text-xs font-bold bg-amber-50 hover:bg-amber-100 text-stone-800 border border-amber-200/80 transition-colors cursor-pointer"
-          >
-            <BookOpen className="w-3.5 h-3.5 text-[#B11116]" />
-            <span>{t.scenarioLibrary}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={onToggleFullscreen}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl text-xs font-bold transition-all border shadow-xs bg-white hover:bg-stone-50 text-stone-700 border-stone-200 cursor-pointer"
-            title={isFullscreen ? t.exitFullscreen : t.fullscreen}
-          >
-            {isFullscreen ? (
-              <>
-                <Minimize2 className="w-3.5 h-3.5 text-[#B11116]" />
-                <span className="hidden sm:inline">{t.exitFullscreen}</span>
-              </>
-            ) : (
-              <>
-                <Maximize2 className="w-3.5 h-3.5 text-[#B11116]" />
-                <span className="hidden sm:inline">{t.fullscreen}</span>
-              </>
-            )}
-          </button>
-        </div>
-      </header>
+      {/* Floating Toggle sidebar button when collapsed */}
+      {isSidebarCollapsed && (
+        <button
+          type="button"
+          onClick={onToggleSidebar}
+          className="fixed top-5 left-5 z-30 p-2.5 rounded-2xl bg-white border border-stone-200/90 shadow-md text-[#B11116] hover:bg-red-50 hover:border-red-200 transition-all cursor-pointer flex items-center justify-center group"
+          title={t.expandSidebar}
+        >
+          <Menu className="w-5 h-5 transition-transform group-hover:scale-105" />
+        </button>
+      )}
 
       {/* Main Workspace Body */}
       <div className="p-6 sm:p-8 space-y-6 max-w-5xl mx-auto w-full">
@@ -214,9 +164,6 @@ export const CenterWorkspace: React.FC<CenterWorkspaceProps> = ({
               <h3 className="text-sm font-bold text-stone-800">
                 {t.scriptSectionTitle}
               </h3>
-              <p className="text-xs text-stone-400">
-                {t.scriptSectionDesc}
-              </p>
             </div>
 
             {/* Script action buttons */}
@@ -289,9 +236,7 @@ export const CenterWorkspace: React.FC<CenterWorkspaceProps> = ({
               <span>{text.length} {t.characters}</span>
             </div>
 
-            <span className="italic text-stone-400 hidden sm:inline">
-              {t.scriptTip}
-            </span>
+
           </div>
         </div>
 
@@ -302,9 +247,7 @@ export const CenterWorkspace: React.FC<CenterWorkspaceProps> = ({
               <h3 className="text-sm font-bold text-stone-800">
                 {t.voiceSectionTitle}
               </h3>
-              <p className="text-xs text-stone-400">
-                {t.voiceSectionDesc}
-              </p>
+
             </div>
 
             {/* Toggle view mode for Voice Actor */}

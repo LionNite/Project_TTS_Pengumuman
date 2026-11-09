@@ -12,7 +12,7 @@ import {
   PRESET_ANNOUNCEMENTS,
 } from './constants';
 import { PresetAnnouncement, SavedAnnouncement, SavedDialog } from './types';
-import { base64ToBlobUrl } from './utils/audio';
+import { base64ToBlobUrl, mergeChimeWithSpeech } from './utils/audio';
 import {
   getSavedAnnouncements,
   saveAnnouncement,
@@ -46,6 +46,7 @@ export default function App() {
 
   // Generated Audio state
   const [audioBlobUrl, setAudioBlobUrl] = useState<string | null>(null);
+  const [rawTtsBase64, setRawTtsBase64] = useState<string | null>(null);
   const [currentAudioBase64, setCurrentAudioBase64] = useState<string | null>(null);
   const [currentMimeType, setCurrentMimeType] = useState<string>('audio/wav');
   const [generatedVoiceInfo, setGeneratedVoiceInfo] = useState<string>('Kore');
@@ -177,14 +178,26 @@ export default function App() {
         throw new Error(data.error || 'Failed to generate audio from TTS model.');
       }
 
-      // Convert base64 to Blob URL
-      const blobUrl = base64ToBlobUrl(data.audioBase64, data.mimeType || 'audio/wav');
+      // Store raw TTS audio
+      setRawTtsBase64(data.audioBase64);
+
+      let finalAudioBase64 = data.audioBase64;
+      let blobUrl: string;
+
+      if (useChime) {
+        const merged = await mergeChimeWithSpeech(data.audioBase64);
+        finalAudioBase64 = merged.audioBase64;
+        blobUrl = merged.blobUrl;
+      } else {
+        blobUrl = base64ToBlobUrl(data.audioBase64, data.mimeType || 'audio/wav');
+      }
+
       setAudioBlobUrl((prevUrl) => {
         if (prevUrl) URL.revokeObjectURL(prevUrl);
         return blobUrl;
       });
-      setCurrentAudioBase64(data.audioBase64);
-      setCurrentMimeType(data.mimeType || 'audio/wav');
+      setCurrentAudioBase64(finalAudioBase64);
+      setCurrentMimeType('audio/wav');
       setGeneratedVoiceInfo(voiceToUse);
 
       // Verify connection success
@@ -196,12 +209,38 @@ export default function App() {
     } finally {
       setIsLoading(false);
     }
-  }, [text, selectedVoice, selectedToneId, t]);
+  }, [text, selectedVoice, selectedToneId, useChime, t]);
 
   // Initial audio generation on first mount
   useEffect(() => {
     handleGenerateAudio();
   }, []);
+
+  // Handle toggling chime on active audio
+  const handleToggleChime = async (newVal: boolean) => {
+    setUseChime(newVal);
+    if (!rawTtsBase64) return;
+
+    try {
+      if (newVal) {
+        const merged = await mergeChimeWithSpeech(rawTtsBase64);
+        setAudioBlobUrl((prevUrl) => {
+          if (prevUrl) URL.revokeObjectURL(prevUrl);
+          return merged.blobUrl;
+        });
+        setCurrentAudioBase64(merged.audioBase64);
+      } else {
+        const blobUrl = base64ToBlobUrl(rawTtsBase64, currentMimeType || 'audio/wav');
+        setAudioBlobUrl((prevUrl) => {
+          if (prevUrl) URL.revokeObjectURL(prevUrl);
+          return blobUrl;
+        });
+        setCurrentAudioBase64(rawTtsBase64);
+      }
+    } catch (err) {
+      console.error('Failed to toggle chime:', err);
+    }
+  };
 
   // Reset function
   const handleReset = () => {
@@ -290,6 +329,20 @@ export default function App() {
 
     try {
       await saveAnnouncement(newAnnouncement);
+      // Synchronously write WAV file to local PC disk folder (saved_audio/)
+      try {
+        await fetch('/api/saved-audio', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: newAnnouncement.id,
+            title: newAnnouncement.title,
+            audioBase64: newAnnouncement.audioBase64,
+          }),
+        });
+      } catch (diskErr) {
+        console.warn('Could not sync to local disk folder:', diskErr);
+      }
       const updated = await getSavedAnnouncements();
       setSavedAnnouncements(updated);
       showNotification(`"${title}" ${t.savedToAudioSuccess}`);
@@ -302,6 +355,14 @@ export default function App() {
   const handleDeleteAnnouncement = async (id: string) => {
     try {
       await deleteSavedAnnouncement(id);
+      // Synchronously delete file from local PC disk folder (saved_audio/)
+      try {
+        await fetch(`/api/saved-audio/${id}`, {
+          method: 'DELETE',
+        });
+      } catch (diskErr) {
+        console.warn('Could not delete from local disk folder:', diskErr);
+      }
       const updated = await getSavedAnnouncements();
       setSavedAnnouncements(updated);
       showNotification(t.deletedAudioSuccess);
@@ -471,7 +532,7 @@ export default function App() {
         onOpenScenarioLibrary={() => setIsScenarioLibraryOpen(true)}
         audioBlobUrl={audioBlobUrl}
         useChime={useChime}
-        onToggleChime={setUseChime}
+        onToggleChime={handleToggleChime}
         onOpenSaveAudioModal={() => setIsSaveAnnouncementModalOpen(true)}
         isAudioSaved={isCurrentAudioSaved}
         generatedVoiceName={generatedVoiceInfo}

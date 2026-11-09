@@ -1,6 +1,0 @@
-{
-  "summary": "Rencana implementasi yang direvisi mencakup: (1) Penambahan opsi pergantian bahasa (Bahasa Indonesia & English) di dalam modal Settings; (2) Internasionalisasi (i18n) menyeluruh pada seluruh teks dan label tampilan antarmuka aplikasi; (3) Perbaikan tombol delete audio tersimpan dengan konfirmasi inline langsung di item; (4) Pengubahan nama riwayat audio menjadi 'Audio tersimpan'; (5) Penyesuaian tombol simpan menjadi 'Save' dan 'Saved'; (6) Pembaruan branding menjadi 'VoiceAnnounce'.",
-  "updatedAt": "2026-10-15T09:30:37.738944537Z",
-  "requestFeedback": true,
-  "userFacing": true
-}

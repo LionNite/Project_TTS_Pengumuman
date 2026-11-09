@@ -83,14 +83,6 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
-      // If at start and chime is enabled, play chime first
-      if (currentTime === 0 && useChime) {
-        setIsPlayingChime(true);
-        const ctx = getAudioContext();
-        await playLibraryChime(ctx);
-        setIsPlayingChime(false);
-      }
-
       audioRef.current.playbackRate = playbackRate;
       audioRef.current.volume = isMuted ? 0 : volume;
       audioRef.current
@@ -109,13 +101,6 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     audioRef.current.currentTime = 0;
     setCurrentTime(0);
     setIsPlaying(false);
-
-    if (useChime) {
-      setIsPlayingChime(true);
-      const ctx = getAudioContext();
-      await playLibraryChime(ctx);
-      setIsPlayingChime(false);
-    }
 
     audioRef.current
       .play()
@@ -221,9 +206,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
                 </span>
               )}
             </div>
-            <p className="text-xs text-stone-400">
-              {t.playerSubtitle}
-            </p>
+
           </div>
         </div>
 
