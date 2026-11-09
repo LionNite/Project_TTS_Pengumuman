@@ -1,0 +1,8 @@
+{
+    "gemini_api_key": "",
+    "tts_model": "gemini-3.8-flash-tts",
+    "refine_model": "gemini-2.5-flash",
+    "default_voice": "Kore",
+    "default_tone": "professional"
+}
+

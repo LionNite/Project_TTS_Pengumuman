@@ -1,0 +1,48 @@
+[
+  {
+    "id": "tpl_closing",
+    "title": "Penutupan Layanan",
+    "title_en": "Closing Announcement",
+    "voice": "Kore",
+    "tone": "professional",
+    "text": "Perhatian kepada seluruh pengunjung. Diberitahukan bahwa operasional dan layanan kami akan segera ditutup dalam waktu 10 menit. Bagi Anda yang masih berada di dalam area, dimohon untuk mulai menyelesaikan urusan serta merapikan barang bawaan Anda. Terima kasih atas kunjungan dan kerja sama Anda.",
+    "text_en": "Attention, all visitors. Please be advised that our facilities and services will be closing in 10 minutes. We kindly ask all guests to conclude their activities and gather their personal belongings. Thank you for visiting and have a wonderful day."
+  },
+  {
+    "id": "tpl_customer_call",
+    "title": "Panggilan Pengunjung",
+    "title_en": "Customer Call",
+    "voice": "Zephyr",
+    "tone": "casual",
+    "text": "Panggilan kepada pelanggan atas nama Bapak Hendra, dimohon untuk segera menuju ke meja layanan pelanggan di dekat pintu masuk utama. Terima kasih.",
+    "text_en": "Customer announcement for Mr. Hendra, please proceed to the customer service desk near the main entrance immediately. Thank you."
+  },
+  {
+    "id": "tpl_safety",
+    "title": "Himbauan Ketertiban",
+    "title_en": "Courtesy & Safety",
+    "voice": "Fenrir",
+    "tone": "formal",
+    "text": "Selamat siang pengunjung yang terhormat. Demi kenyamanan dan keselamatan bersama, kami mengimbau seluruh pengunjung untuk selalu mengawasi barang bawaan pribadi serta menjaga ketertiban di seluruh area. Terima kasih atas perhatian dan kerja sama Anda.",
+    "text_en": "Good afternoon, esteemed visitors. For our mutual safety and comfort, please keep your personal belongings with you at all times and adhere to courtesy guidelines throughout the premises. Thank you for your cooperation."
+  },
+  {
+    "id": "tpl_lost_found",
+    "title": "Barang Tertinggal",
+    "title_en": "Lost and Found",
+    "voice": "Kore",
+    "tone": "formal",
+    "text": "Perhatian kepada seluruh pengunjung. Telah ditemukan sebuah dompet kartu di area lobi utama. Bagi pengunjung yang merasa kehilangan, dipersilakan untuk mendatangi petugas keamanan atau meja informasi dengan menunjukkan kartu identitas. Terima kasih.",
+    "text_en": "Attention, all visitors. A card wallet has been found near the main lobby. If you believe this item belongs to you, please report to the information or security desk with valid identification. Thank you."
+  },
+  {
+    "id": "tpl_event",
+    "title": "Acara Segera Dimulai",
+    "title_en": "Event Starting",
+    "voice": "Puck",
+    "tone": "energetic",
+    "text": "Halo rekan-rekan dan hadirin sekalian. Acara presentasi dan sesi pembagian doorprize akan segera dimulai dalam waktu 5 menit di panggung utama. Seluruh peserta dipersilakan untuk segera menempati tempat duduk yang telah disediakan. Terima kasih!",
+    "text_en": "Hello everyone and welcome. The main presentation and prize giveaway session will begin in 5 minutes at the main stage. All attendees are invited to take their seats now. Thank you!"
+  }
+]
+
