@@ -8,14 +8,15 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
-if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
+$reqMethod = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '';
+if ($reqMethod === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
 require_once __DIR__ . '/config.php';
 
-$action = $_GET['action'] ?? $_POST['action'] ?? '';
+$action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : '');
 
 // Helper to send JSON responses
 function send_json($data, $status_code = 200) {
@@ -164,7 +165,7 @@ function call_gemini_api($endpoint, $payload, $apiKey, $timeout = 25) {
 // -------------------------------------------------------------
 if ($action === 'check_key' || $action === 'health') {
     $config = get_app_config();
-    $key = trim($config['gemini_api_key'] ?? '');
+    $key = trim(isset($config['gemini_api_key']) ? $config['gemini_api_key'] : '');
     $hasKey = !empty($key);
     $preview = '';
     if ($hasKey) {
@@ -176,7 +177,7 @@ if ($action === 'check_key' || $action === 'health') {
         'has_key' => $hasKey,
         'key_preview' => $preview,
         'audio_dir' => get_saved_audio_dir(),
-        'language' => $config['language'] ?? 'id',
+        'language' => isset($config['language']) ? $config['language'] : 'id',
         'tts_model' => 'gemini-3.8-flash-tts'
     ]);
 }
@@ -228,7 +229,7 @@ if ($action === 'get_templates') {
 
 if ($action === 'save_templates') {
     $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
-    $templates = $input['templates'] ?? [];
+    $templates = isset($input['templates']) ? $input['templates'] : [];
 
     if (!is_array($templates)) {
         send_json(['error' => 'Format template tidak valid.'], 400);
@@ -246,16 +247,16 @@ if ($action === 'save_templates') {
 // -------------------------------------------------------------
 if ($action === 'tts') {
     $config = get_app_config();
-    $apiKey = trim($config['gemini_api_key'] ?? '');
+    $apiKey = trim(isset($config['gemini_api_key']) ? $config['gemini_api_key'] : '');
 
     if (empty($apiKey)) {
         send_json(['error' => 'GEMINI_API_KEY belum dikonfigurasi. Silakan buka menu "Pengaturan" di kanan atas.'], 400);
     }
 
     $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
-    $text = trim($input['text'] ?? '');
-    $voice = trim($input['voice'] ?? 'Kore');
-    $style = trim($input['style'] ?? 'Sopan, jelas, dan ramah untuk pengumuman umum');
+    $text = trim(isset($input['text']) ? $input['text'] : '');
+    $voice = trim(isset($input['voice']) ? $input['voice'] : 'Kore');
+    $style = trim(isset($input['style']) ? $input['style'] : 'Sopan, jelas, dan ramah untuk pengumuman umum');
     $includeBell = isset($input['include_bell']) ? (bool)$input['include_bell'] : true;
 
     if (empty($text)) {
@@ -337,12 +338,12 @@ if ($action === 'tts') {
             foreach ($res['data']['candidates'][0]['content']['parts'] as $part) {
                 if (isset($part['inlineData']['data'])) {
                     $rawAudioBase64 = $part['inlineData']['data'];
-                    $mimeType = $part['inlineData']['mimeType'] ?? 'audio/wav';
+                    $mimeType = isset($part['inlineData']['mimeType']) ? $part['inlineData']['mimeType'] : 'audio/wav';
                     break 2;
                 }
             }
         } else {
-            $errMsg = $res['data']['error']['message'] ?? ($res['raw'] ?? 'Unknown error');
+            $errMsg = isset($res['data']['error']['message']) ? $res['data']['error']['message'] : (isset($res['raw']) ? $res['raw'] : 'Unknown error');
             $lastError = "[{$modelName}] {$errMsg}";
         }
     }
@@ -375,15 +376,15 @@ if ($action === 'tts') {
 // -------------------------------------------------------------
 if ($action === 'refine') {
     $config = get_app_config();
-    $apiKey = trim($config['gemini_api_key'] ?? '');
+    $apiKey = trim(isset($config['gemini_api_key']) ? $config['gemini_api_key'] : '');
 
     if (empty($apiKey)) {
         send_json(['error' => 'GEMINI_API_KEY belum dikonfigurasi. Silakan buka menu "Pengaturan".'], 400);
     }
 
     $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
-    $text = trim($input['text'] ?? '');
-    $tone = trim($input['tone'] ?? 'sopan, jelas, dan ramah');
+    $text = trim(isset($input['text']) ? $input['text'] : '');
+    $tone = trim(isset($input['tone']) ? $input['tone'] : 'sopan, jelas, dan ramah');
 
     if (empty($text)) {
         send_json(['error' => 'Teks naskah tidak boleh kosong.'], 400);
@@ -411,7 +412,7 @@ if ($action === 'refine') {
         $refined = trim($res['data']['candidates'][0]['content']['parts'][0]['text']);
         send_json(['success' => true, 'refinedText' => $refined]);
     } else {
-        $errMsg = $res['data']['error']['message'] ?? ($res['error'] ?? 'Gagal menyempurnakan teks dengan AI.');
+        $errMsg = isset($res['data']['error']['message']) ? $res['data']['error']['message'] : (isset($res['error']) ? $res['error'] : 'Gagal menyempurnakan teks dengan AI.');
         send_json(['error' => $errMsg], 500);
     }
 }
@@ -422,11 +423,11 @@ if ($action === 'refine') {
 if ($action === 'save_audio') {
     $storageDir = get_saved_audio_dir();
     $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
-    $audioBase64 = $input['audioBase64'] ?? '';
-    $title = trim($input['title'] ?? 'Pengumuman');
-    $text = trim($input['text'] ?? '');
-    $voice = trim($input['voice'] ?? 'Kore');
-    $style = trim($input['style'] ?? 'Normal');
+    $audioBase64 = isset($input['audioBase64']) ? $input['audioBase64'] : '';
+    $title = trim(isset($input['title']) ? $input['title'] : 'Pengumuman');
+    $text = trim(isset($input['text']) ? $input['text'] : '');
+    $voice = trim(isset($input['voice']) ? $input['voice'] : 'Kore');
+    $style = trim(isset($input['style']) ? $input['style'] : 'Normal');
 
     if (empty($audioBase64)) {
         send_json(['error' => 'Data audio base64 diperlukan.'], 400);
@@ -495,11 +496,11 @@ if ($action === 'list_audio') {
 
                 $files[] = [
                     'filename' => $item,
-                    'title' => $meta['title'] ?? pathinfo($item, PATHINFO_FILENAME),
-                    'text' => $meta['text'] ?? '',
-                    'voice' => $meta['voice'] ?? 'Kore',
-                    'style' => $meta['style'] ?? 'Normal',
-                    'created_at' => $meta['created_at'] ?? date('Y-m-d H:i:s', filemtime($wavPath)),
+                    'title' => isset($meta['title']) ? $meta['title'] : pathinfo($item, PATHINFO_FILENAME),
+                    'text' => isset($meta['text']) ? $meta['text'] : '',
+                    'voice' => isset($meta['voice']) ? $meta['voice'] : 'Kore',
+                    'style' => isset($meta['style']) ? $meta['style'] : 'Normal',
+                    'created_at' => isset($meta['created_at']) ? $meta['created_at'] : date('Y-m-d H:i:s', filemtime($wavPath)),
                     'timestamp' => filemtime($wavPath),
                     'size_bytes' => filesize($wavPath),
                     'size_formatted' => round(filesize($wavPath) / 1024, 1) . ' KB',
@@ -522,7 +523,8 @@ if ($action === 'list_audio') {
 if ($action === 'delete_audio') {
     $storageDir = get_saved_audio_dir();
     $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
-    $filename = basename($input['filename'] ?? $_GET['file'] ?? '');
+    $targetFile = isset($input['filename']) ? $input['filename'] : (isset($_GET['file']) ? $_GET['file'] : '');
+    $filename = basename($targetFile);
 
     if (empty($filename)) {
         send_json(['error' => 'Nama file tidak boleh kosong.'], 400);
@@ -551,7 +553,8 @@ if ($action === 'delete_audio') {
 // -------------------------------------------------------------
 if ($action === 'stream_audio') {
     $storageDir = get_saved_audio_dir();
-    $filename = basename($_GET['file'] ?? '');
+    $streamFile = isset($_GET['file']) ? $_GET['file'] : '';
+    $filename = basename($streamFile);
     $filePath = $storageDir . '/' . $filename;
 
     if (empty($filename) || !file_exists($filePath)) {

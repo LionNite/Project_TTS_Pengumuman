@@ -1,51 +1,17 @@
-# Ignore list for Eagle, a PCB layout tool
+# Environment & Secret files
+.env
+.env.*
+!.env.example
+settings.json
+TTS_Pengumuman/settings.json
 
-# Backup files
-*.s#?
-*.b#?
-*.l#?
-*.b$?
-*.s$?
-*.l$?
+# Generated Audio Archives
+saved_audio/
+TTS_Pengumuman/saved_audio/
+*.wav
 
-# Eagle project file
-# It contains a serial number and references to the file structure
-# on your computer.
-# comment the following line if you want to have your project file included.
-eagle.epf
-
-# Autorouter files
-*.pro
-*.job
-
-# CAM files
-*.$$$
-*.cmp
-*.ly2
-*.l15
-*.sol
-*.plc
-*.stc
-*.sts
-*.crc
-*.crs
-
-*.dri
-*.drl
-*.gpi
-*.pls
-*.ger
-*.xln
-
-*.drd
-*.drd.*
-
-*.s#*
-*.b#*
-
-*.info
-
-*.eps
-
-# file locks introduced since 7.x
-*.lck
+# System & Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

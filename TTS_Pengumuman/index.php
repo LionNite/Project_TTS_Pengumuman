@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/config.php';
 $config = get_app_config();
-$hasKey = !empty(trim($config['gemini_api_key'] ?? ''));
-$initialLang = $config['language'] ?? 'id';
+$hasKey = !empty(trim(isset($config['gemini_api_key']) ? $config['gemini_api_key'] : ''));
+$initialLang = isset($config['language']) ? $config['language'] : 'id';
 $currentStorageDir = get_saved_audio_dir();
 ?>
 <!DOCTYPE html>

@@ -46,7 +46,7 @@ function save_app_config($data) {
 // Dynamic Audio Storage Directory
 function get_saved_audio_dir() {
     $config = get_app_config();
-    $custom = trim($config['saved_audio_dir'] ?? '');
+    $custom = trim(isset($config['saved_audio_dir']) ? $config['saved_audio_dir'] : '');
 
     if (!empty($custom)) {
         if (!is_dir($custom)) {
